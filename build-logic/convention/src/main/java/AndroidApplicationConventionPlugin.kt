@@ -1,3 +1,5 @@
+import com.alexallafi.convention.ExtensionType
+import com.alexallafi.convention.configureBuildTypes
 import com.alexallafi.convention.configureKotlinAndroid
 import com.alexallafi.convention.libs
 import com.android.build.api.dsl.ApplicationExtension
@@ -23,6 +25,8 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 }
 
                 configureKotlinAndroid(this)
+
+                configureBuildTypes(this, extensionType = ExtensionType.APPLICATION)
             }
         }
     }
