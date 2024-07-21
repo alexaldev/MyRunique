@@ -6,7 +6,8 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 
-class AndroidFeatureUIConventionPlugin : Plugin<Project> {
+class AndroidFeatureUiConventionPlugin: Plugin<Project> {
+
     override fun apply(target: Project) {
         target.run {
             pluginManager.run {

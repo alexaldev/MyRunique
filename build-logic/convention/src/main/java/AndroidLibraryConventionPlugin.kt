@@ -21,7 +21,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 configureKotlinAndroid(this)
 
                 configureBuildTypes(
-                    commonException = this,
+                    commonExtension = this,
                     extensionType = ExtensionType.LIBRARY)
 
                 defaultConfig {

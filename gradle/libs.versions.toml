@@ -42,7 +42,7 @@ annotation = "1.7.1"
 # Project versions
 projectApplicationId = "com.alexallafi.runique"
 projectVersionName = "1.0"
-projectMinSdkVersion = "25"
+projectMinSdkVersion = "26"
 projectTargetSdkVersion = "34"
 projectCompileSdkVersion = "34"
 projectVersionCode = "1"
@@ -117,14 +117,14 @@ org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org
 androidDynamicFeature = { id = "com.android.dynamic-feature", version.ref = "agp" }
 mapsplatform-secrets-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsPlugin"}
 
-runique-android-application = { id="runique.android.application", version="unspecified" }
-runique-android-application-compose = { id="runique.android.application.compose", version="unspecified" }
-runique-android-library = { id="runique.android.library", version="unspecified" }
-runique-android-library-compose = { id="runique.android.library.compose", version="unspecified" }
-runique-android-feature-ui = { id="runique.android.feature.ui", version="unspecified" }
-runique-android-room = { id="runique.android.room", version="unspecified" }
-runique-jvm-library = { id="runique.jvm.library", version="unspecified" }
-runique-jvm-ktor = { id="runique.jvm.ktor", version="unspecified" }
+runique-android-application = { id = "runique.android.application", version = "unspecified" }
+runique-android-application-compose = { id = "runique.android.application.compose", version = "unspecified" }
+runique-android-library = { id = "runique.android.library", version = "unspecified" }
+runique-android-library-compose = { id = "runique.android.library.compose", version = "unspecified" }
+runique-android-feature-ui = { id = "runique.android.feature.ui", version = "unspecified" }
+runique-android-room = { id = "runique.android.room", version = "unspecified" }
+runique-jvm-library = { id = "runique.jvm.library", version = "unspecified" }
+runique-jvm-ktor = { id = "runique.jvm.ktor", version = "unspecified" }
 
 [bundles]
 compose = [
@@ -133,15 +133,13 @@ compose = [
     "androidx-lifecycle-viewmodel-compose",
     "androidx-compose-material3",
     "androidx-compose-ui",
-    "androidx-activity-compose",
     "androidx-compose-ui-graphics",
     "androidx-compose-ui-tooling-preview",
 ]
 compose-debug = [
     "androidx-compose-ui-tooling",
-    "androidx-compose-ui-test-manifest"
+    "androidx-compose-ui-test-manifest",
 ]
-
 koin = ["koin-core", "koin-android", "koin-android-workmanager"]
 koin-compose = ["koin-core", "koin-android", "koin-android-workmanager", "koin-androidx-compose"]
 ktor = [

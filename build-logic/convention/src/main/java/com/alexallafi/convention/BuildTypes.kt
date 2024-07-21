@@ -7,13 +7,12 @@ import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
-import java.lang.Exception
 
 internal fun Project.configureBuildTypes(
-    commonException: CommonExtension<*, *, *, *, *>,
+    commonExtension: CommonExtension<*, *, *, *, *>,
     extensionType: ExtensionType
 ) {
-    commonException.run {
+    commonExtension.run {
 
         buildFeatures {
             buildConfig = true
@@ -29,7 +28,7 @@ internal fun Project.configureBuildTypes(
                             configureDebugBuildType(apiKey)
                         }
                         release {
-                            configureReleaseBuildType(commonException, apiKey)
+                            configureReleaseBuildType(commonExtension, apiKey)
                         }
                     }
                 }
@@ -41,7 +40,7 @@ internal fun Project.configureBuildTypes(
                             configureDebugBuildType(apiKey)
                         }
                         release {
-                            configureReleaseBuildType(commonException, apiKey)
+                            configureReleaseBuildType(commonExtension, apiKey)
                         }
                     }
                 }

@@ -1,3 +1,4 @@
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     `kotlin-dsl`
 }
@@ -28,11 +29,11 @@ gradlePlugin {
         }
         register("androidLibraryCompose") {
             id = "runique.android.library.compose"
-            implementationClass = "AndroidLibraryConventionPlugin"
+            implementationClass = "AndroidLibraryComposeConventionPlugin"
         }
         register("androidFeatureUi") {
             id = "runique.android.feature.ui"
-            implementationClass = "AndroidFeatureUIConventionPlugin"
+            implementationClass = "AndroidFeatureUiConventionPlugin"
         }
         register("androidRoom") {
             id = "runique.android.room"
@@ -46,6 +47,5 @@ gradlePlugin {
             id = "runique.jvm.ktor"
             implementationClass = "JvmKtorConventionPlugin"
         }
-
     }
 }
