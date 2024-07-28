@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import com.alexallafi.presentation.designsystem.AnalyticsIcon
 import com.alexallafi.presentation.designsystem.MyRuniqueTheme
 
@@ -25,8 +26,10 @@ class MainActivity : ComponentActivity() {
             MyRuniqueTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background) {
-                    Icon(imageVector = AnalyticsIcon, contentDescription =null)
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val navController = rememberNavController()
+                    NavigationRoot(navController = navController)
                 }
             }
         }
