@@ -3,6 +3,7 @@ package com.alexallafi.myrunique
 import android.app.Application
 import com.alexallafi.auth.data.di.authDataModule
 import com.alexallafi.auth.presentation.di.authViewModelModule
+import com.alexallafi.core.data.di.coreDataModule
 import com.alexallafi.myrunique.di.appModule
 import com.plcoding.runique.BuildConfig
 import org.koin.android.ext.koin.androidContext
@@ -23,7 +24,8 @@ class Runique : Application() {
             modules(
                 appModule,
                 authDataModule,
-                authViewModelModule
+                authViewModelModule,
+                coreDataModule
             )
         }
     }
