@@ -18,7 +18,7 @@ class EncryptedSessionStorage(
 
         return withContext(Dispatchers.IO) {
 
-            val json = sharedPreferences.getString(KEY_AUTH_INFO, "")
+            val json = sharedPreferences.getString(KEY_AUTH_INFO, null)
             json?.let {
                 Json.decodeFromString<AuthInfoSerializable>(it).toAuthInfo()
             }
