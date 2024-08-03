@@ -27,12 +27,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.alexallafi.auth.presentation.register.RegisterAction
 import com.alexallafi.core.presentation.ui.ObserveAsEvents
 import com.alexallafi.presentation.designsystem.EmailIcon
 import com.alexallafi.presentation.designsystem.MyRuniqueTheme
 import com.alexallafi.presentation.designsystem.Poppins
-import com.alexallafi.presentation.designsystem.RuniqueGray
 import com.alexallafi.presentation.designsystem.components.GradientBackground
 import com.alexallafi.presentation.designsystem.components.RuniqueActionButton
 import com.alexallafi.presentation.designsystem.components.RuniquePasswordTextField
@@ -41,16 +39,14 @@ import com.plcoding.auth.presentation.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-
 fun LoginScreenRoot(
     onLoginSuccess: () -> Unit,
     onSignUpClick: () -> Unit,
-    viewModel: LoginViewModel = koinViewModel()
+    viewModel: LoginViewModel = koinViewModel(),
 ) {
-
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    ObserveAsEvents(flow = viewModel.events) { event ->
+    ObserveAsEvents(viewModel.events) { event ->
         when(event) {
             is LoginEvent.Error -> {
                 keyboardController?.hide()
@@ -58,9 +54,10 @@ fun LoginScreenRoot(
                     context,
                     event.error.asString(context),
                     Toast.LENGTH_LONG
-                    ).show()
+                ).show()
             }
             LoginEvent.LoginSuccess -> {
+                keyboardController?.hide()
                 Toast.makeText(
                     context,
                     R.string.youre_logged_in,
@@ -71,12 +68,11 @@ fun LoginScreenRoot(
             }
         }
     }
-
     LoginScreen(
         state = viewModel.state,
         onAction = { action ->
             when(action) {
-                LoginAction.OnRegisterClick -> onSignUpClick()
+                is LoginAction.OnRegisterClick -> onSignUpClick()
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -86,7 +82,6 @@ fun LoginScreenRoot(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-
 private fun LoginScreen(
     state: LoginState,
     onAction: (LoginAction) -> Unit
@@ -110,8 +105,11 @@ private fun LoginScreen(
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+
             Spacer(modifier = Modifier.height(48.dp))
-            RuniqueTextField(state = state.email,
+
+            RuniqueTextField(
+                state = state.email,
                 startIcon = EmailIcon,
                 endIcon = null,
                 hint = stringResource(id = R.string.example_email),
@@ -122,15 +120,23 @@ private fun LoginScreen(
             RuniquePasswordTextField(
                 state = state.password,
                 isPasswordVisible = state.isPasswordVisible,
-                onTogglePasswordVisibility = { onAction(LoginAction.OnTogglePasswordVisibility) },
+                onTogglePasswordVisibility = {
+                    onAction(LoginAction.OnTogglePasswordVisibility)
+                },
                 hint = stringResource(id = R.string.password),
                 title = stringResource(id = R.string.password),
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(32.dp))
-            RuniqueActionButton(text = stringResource(id = R.string.login) , isLoading = state.isLoggingIn, enabled = state.canLogin) {
-                onAction(LoginAction.OnLoginClick)
-            }
+            RuniqueActionButton(
+                text = stringResource(id = R.string.login),
+                isLoading = state.isLoggingIn,
+                enabled = state.canLogin,
+                onClick = {
+                    onAction(LoginAction.OnLoginClick)
+                },
+            )
+
             val annotatedString = buildAnnotatedString {
                 withStyle(
                     style = SpanStyle(
@@ -156,11 +162,11 @@ private fun LoginScreen(
             }
             Box(
                 modifier = Modifier
+
                     .align(Alignment.CenterHorizontally)
-                    .weight(1f),
+                    ,
                 contentAlignment = Alignment.BottomCenter
             ) {
-
                 ClickableText(
                     text = annotatedString,
                     onClick = { offset ->
@@ -181,17 +187,10 @@ private fun LoginScreen(
 @Preview
 @Composable
 private fun LoginScreenPreview() {
-
-    MyRuniqueTheme  {
-
+    MyRuniqueTheme {
         LoginScreen(
-
             state = LoginState(),
-
             onAction = {}
-
         )
-
     }
-
 }
