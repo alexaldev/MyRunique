@@ -48,7 +48,7 @@ import com.plcoding.core.presentation.designsystem.R
 fun RuniqueToolbar(
     showBackButton: Boolean,
     title: String,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     menuItems: List<DropDownItem> = emptyList(),
     onMenuItemClick: (Int) -> Unit = {},
     onBackClick: () -> Unit = {},
