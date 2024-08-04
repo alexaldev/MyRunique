@@ -12,6 +12,7 @@ class AndroidFeatureUiConventionPlugin: Plugin<Project> {
         target.run {
             pluginManager.run {
                 apply("runique.android.library.compose")
+                pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
             }
 
             dependencies {

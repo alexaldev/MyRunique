@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.alexallafi.auth.presentation.login
 
 import android.widget.Toast
@@ -191,6 +193,7 @@ private fun LoginScreen(
 @Composable
 private fun LoginScreenPreview() {
     MyRuniqueTheme {
+        @Suppress("OPT_IN_USAGE_FUTURE_ERROR")
         LoginScreen(
             state = LoginState(),
             onAction = {}
