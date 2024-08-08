@@ -4,6 +4,8 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.alexallafi.myrunique.MainViewModel
+import com.alexallafi.myrunique.Runique
+import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
@@ -21,4 +23,8 @@ val appModule = module {
     }
 
     viewModelOf(::MainViewModel)
+
+    single<CoroutineScope> {
+        (androidApplication() as Runique).applicationScope
+    }
 }
