@@ -19,10 +19,15 @@ class ActiveRunViewModel : ViewModel() {
 
     fun onAction(action: ActiveRunAction) {
         when(action) {
-            ActiveRunAction.OnDismissDialog -> Unit
-            ActiveRunAction.OnResumeRunClick -> Unit
-            ActiveRunAction.OnStopRunClick -> Unit
-            ActiveRunAction.OnToggleRunClick -> Unit
+            ActiveRunAction.OnFinishRunClick -> {
+
+            }
+            ActiveRunAction.OnResumeRunClick -> {
+
+            }
+            ActiveRunAction.OnToggleRunClick -> {
+
+            }
             is ActiveRunAction.SubmitLocationPermissionInfo -> {
                 _hasLocationPermission.value = action.acceptedLocationPermission
                 state = state.copy(
@@ -31,10 +36,10 @@ class ActiveRunViewModel : ViewModel() {
             }
             is ActiveRunAction.SubmitNotificationPermissionInfo -> {
                 state = state.copy(
-                    showLocationRationale = action.showNotificationRationale
+                    showNotificationRationale = action.showNotificationRationale
                 )
             }
-            ActiveRunAction.DimissRationaleDialog -> {
+            is ActiveRunAction.DismissRationaleDialog -> {
                 state = state.copy(
                     showNotificationRationale = false,
                     showLocationRationale = false

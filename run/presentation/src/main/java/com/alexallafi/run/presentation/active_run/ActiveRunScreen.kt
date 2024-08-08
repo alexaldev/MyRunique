@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.alexallafi.run.presentation.active_run
 
 import android.content.Context
@@ -21,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alexallafi.presentation.designsystem.MyRuniqueTheme
+import android.Manifest
 import com.alexallafi.presentation.designsystem.StartIcon
 import com.alexallafi.presentation.designsystem.StopIcon
 import com.alexallafi.presentation.designsystem.components.RuniqueDialog
@@ -35,11 +38,11 @@ import com.alexallafi.run.presentation.util.shouldShowLocationPermissionRational
 import com.alexallafi.run.presentation.util.shouldShowNotificationPermissionRationale
 import com.plcoding.run.presentation.R
 import org.koin.androidx.compose.koinViewModel
-import java.util.jar.Manifest
+
 
 @Composable
 fun ActiveRunScreenRoot(
-    viewModel: ActiveRunViewModel = koinViewModel()
+    viewModel: ActiveRunViewModel = koinViewModel(),
 ) {
     ActiveRunScreen(
         state = viewModel.state,
@@ -47,36 +50,31 @@ fun ActiveRunScreenRoot(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ActiveRunScreen(
     state: ActiveRunState,
     onAction: (ActiveRunAction) -> Unit
-
 ) {
-
     val context = LocalContext.current
     val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { perms ->
-        val hasCoarseLocationPermission = perms[android.Manifest.permission.ACCESS_COARSE_LOCATION] == true
-        val hasFineLocationPermission = perms[android.Manifest.permission.ACCESS_FINE_LOCATION] == true
-        val hasNotificationPermission = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            perms[android.Manifest.permission.POST_NOTIFICATIONS] == true
+        val hasCourseLocationPermission = perms[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        val hasFineLocationPermission = perms[Manifest.permission.ACCESS_FINE_LOCATION] == true
+        val hasNotificationPermission = if (Build.VERSION.SDK_INT >= 33) {
+            perms[Manifest.permission.POST_NOTIFICATIONS] == true
         } else true
 
         val activity = context as ComponentActivity
-
         val showLocationRationale = activity.shouldShowLocationPermissionRationale()
         val showNotificationRationale = activity.shouldShowNotificationPermissionRationale()
 
         onAction(
             ActiveRunAction.SubmitLocationPermissionInfo(
-                acceptedLocationPermission = hasCoarseLocationPermission && hasFineLocationPermission,
+                acceptedLocationPermission = hasCourseLocationPermission && hasFineLocationPermission,
                 showLocationRationale = showLocationRationale
             )
         )
-
         onAction(
             ActiveRunAction.SubmitNotificationPermissionInfo(
                 acceptedNotificationPermission = hasNotificationPermission,
@@ -96,7 +94,6 @@ private fun ActiveRunScreen(
                 showLocationRationale = showLocationRationale
             )
         )
-
         onAction(
             ActiveRunAction.SubmitNotificationPermissionInfo(
                 acceptedNotificationPermission = context.hasNotificationPermission(),
@@ -104,7 +101,7 @@ private fun ActiveRunScreen(
             )
         )
 
-        if (!showLocationRationale && !showNotificationRationale) {
+        if(!showLocationRationale && !showNotificationRationale) {
             permissionLauncher.requestRuniquePermissions(context)
         }
     }
@@ -117,14 +114,16 @@ private fun ActiveRunScreen(
                 title = stringResource(id = R.string.active_run),
                 onBackClick = {
                     onAction(ActiveRunAction.OnBackClick)
-                }
+                },
             )
         },
         floatingActionButton = {
             RuniqueFloatingActionButton(
                 icon = if (state.shouldTrack) {
                     StopIcon
-                } else { StartIcon },
+                } else {
+                    StartIcon
+                },
                 onClick = {
                     onAction(ActiveRunAction.OnToggleRunClick)
                 },
@@ -143,8 +142,8 @@ private fun ActiveRunScreen(
                 .background(MaterialTheme.colorScheme.surface)
         ) {
             RunDataCard(
-                runData = state.runData,
                 elapsedTime = state.elapsedTime,
+                runData = state.runData,
                 modifier = Modifier
                     .padding(16.dp)
                     .padding(padding)
@@ -173,11 +172,11 @@ private fun ActiveRunScreen(
                     text = stringResource(id = R.string.ok),
                     isLoading = false,
                     onClick = {
-                        onAction(ActiveRunAction.DimissRationaleDialog)
+                        onAction(ActiveRunAction.DismissRationaleDialog)
                         permissionLauncher.requestRuniquePermissions(context)
-                    })
+                    }
+                )
             },
-            Modifier
         )
     }
 }
@@ -185,30 +184,23 @@ private fun ActiveRunScreen(
 private fun ActivityResultLauncher<Array<String>>.requestRuniquePermissions(
     context: Context
 ) {
-    val hasLocation = context.hasLocationPermission()
-    val hasNotification = context.hasNotificationPermission()
+    val hasLocationPermission = context.hasLocationPermission()
+    val hasNotificationPermission = context.hasNotificationPermission()
 
     val locationPermissions = arrayOf(
-        android.Manifest.permission.ACCESS_FINE_LOCATION,
-        android.Manifest.permission.ACCESS_COARSE_LOCATION
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION,
     )
-
-    val notificationPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arrayOf(android.Manifest.permission.POST_NOTIFICATIONS)
-    } else {
-        arrayOf()
-    }
+    val notificationPermission = if(Build.VERSION.SDK_INT >= 33) {
+        arrayOf(Manifest.permission.POST_NOTIFICATIONS)
+    } else arrayOf()
 
     when {
-        !hasLocation && !hasNotification -> {
+        !hasLocationPermission && !hasNotificationPermission -> {
             launch(locationPermissions + notificationPermission)
         }
-        !hasLocation -> {
-            launch(locationPermissions)
-        }
-        !hasNotification -> {
-            launch(notificationPermission)
-        }
+        !hasLocationPermission -> launch(locationPermissions)
+        !hasNotificationPermission -> launch(notificationPermission)
     }
 }
 

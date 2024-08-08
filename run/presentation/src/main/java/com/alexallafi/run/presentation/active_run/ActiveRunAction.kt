@@ -2,7 +2,7 @@ package com.alexallafi.run.presentation.active_run
 
 sealed interface ActiveRunAction {
     data object OnToggleRunClick: ActiveRunAction
-    data object OnStopRunClick: ActiveRunAction
+    data object OnFinishRunClick: ActiveRunAction
     data object OnResumeRunClick : ActiveRunAction
     data object OnBackClick : ActiveRunAction
     data object OnDismissDialog: ActiveRunAction
@@ -15,5 +15,5 @@ sealed interface ActiveRunAction {
         val acceptedNotificationPermission: Boolean,
         val showNotificationRationale: Boolean
     ): ActiveRunAction
-    data object DimissRationaleDialog : ActiveRunAction
+    data object DismissRationaleDialog : ActiveRunAction
 }

@@ -25,7 +25,7 @@ fun RuniqueDialog(
     onDismiss: () -> Unit,
     description: String,
     primaryButton: @Composable () -> Unit,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     secondaryButton: @Composable () -> Unit = {}
 ) {
     Dialog(onDismissRequest = onDismiss) {
