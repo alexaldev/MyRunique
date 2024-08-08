@@ -9,4 +9,9 @@
     <string name="duration">Duration</string>
     <string name="distance">Distance</string>
     <string name="pace">Pace</string>
+    <string name="permission_required">Permission Required</string>
+    <string name="location_notification_rationale">TODO()</string>
+    <string name="location_rationale">TODO()</string>
+    <string name="notification_rationale">TODO()</string>
+    <string name="ok">Ok</string>
 </resources>
