@@ -13,5 +13,4 @@ object LocationDataCalculator {
             }.sum().roundToInt()
         }
     }
-
 }
