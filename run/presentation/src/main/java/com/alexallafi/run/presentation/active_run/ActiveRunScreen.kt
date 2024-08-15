@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.alexallafi.presentation.designsystem.MyRuniqueTheme
 import android.Manifest
+import android.graphics.Bitmap
 import com.alexallafi.presentation.designsystem.StartIcon
 import com.alexallafi.presentation.designsystem.StopIcon
 import com.alexallafi.presentation.designsystem.components.RuniqueActionButton
@@ -41,6 +42,7 @@ import com.alexallafi.run.presentation.util.shouldShowLocationPermissionRational
 import com.alexallafi.run.presentation.util.shouldShowNotificationPermissionRationale
 import com.plcoding.run.presentation.R
 import org.koin.androidx.compose.koinViewModel
+import java.io.ByteArrayOutputStream
 
 
 @Composable
@@ -164,7 +166,17 @@ private fun ActiveRunScreen(
                 isRunFinished = state.isRunFinished,
                 currentLocation = state.currentLocation,
                 locations = state.runData.locations,
-                onSnapshot = {},
+                onSnapshot = {bmp ->
+                    val stream = ByteArrayOutputStream()
+                    stream.use {
+                        bmp.compress(
+                            Bitmap.CompressFormat.JPEG,
+                            80,
+                            it
+                        )
+                    }
+                    onAction(ActiveRunAction.OnRunProcessed(stream.toByteArray()))
+                },
                 modifier = Modifier.fillMaxSize()
             )
 
