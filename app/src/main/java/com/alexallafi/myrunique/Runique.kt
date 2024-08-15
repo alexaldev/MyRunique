@@ -5,6 +5,7 @@ import com.alexallafi.auth.data.di.authDataModule
 import com.alexallafi.auth.presentation.di.authViewModelModule
 import com.alexallafi.run.presentation.di.runPresentationModule
 import com.alexallafi.core.data.di.coreDataModule
+import com.alexallafi.core.database.di.databaseModule
 import com.alexallafi.myrunique.di.appModule
 import com.alexallafi.run.location.di.locationModule
 import com.plcoding.runique.BuildConfig
@@ -33,7 +34,8 @@ class Runique : Application() {
                 authViewModelModule,
                 coreDataModule,
                 runPresentationModule,
-                locationModule
+                locationModule,
+                databaseModule
             )
         }
     }
