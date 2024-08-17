@@ -8,6 +8,7 @@ import com.alexallafi.core.data.di.coreDataModule
 import com.alexallafi.core.database.di.databaseModule
 import com.alexallafi.myrunique.di.appModule
 import com.alexallafi.run.location.di.locationModule
+import com.alexallafi.run.network.di.networkModule
 import com.plcoding.runique.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -35,7 +36,8 @@ class Runique : Application() {
                 coreDataModule,
                 runPresentationModule,
                 locationModule,
-                databaseModule
+                databaseModule,
+                networkModule
             )
         }
     }

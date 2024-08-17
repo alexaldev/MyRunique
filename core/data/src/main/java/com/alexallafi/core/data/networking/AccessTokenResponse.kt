@@ -1,6 +1,9 @@
 package com.alexallafi.core.data.networking
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class AccessTokenResponse(
     val accessToken: String,
-    val exporationTimestamp: String
+    val expirationTimestamp: Long
 )

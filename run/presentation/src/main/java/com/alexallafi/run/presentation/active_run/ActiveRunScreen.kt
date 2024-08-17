@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.alexallafi.presentation.designsystem.MyRuniqueTheme
 import android.Manifest
 import android.graphics.Bitmap
+import android.widget.Toast
+import com.alexallafi.core.presentation.ui.ObserveAsEvents
 import com.alexallafi.presentation.designsystem.StartIcon
 import com.alexallafi.presentation.designsystem.StopIcon
 import com.alexallafi.presentation.designsystem.components.RuniqueActionButton
@@ -47,13 +49,42 @@ import java.io.ByteArrayOutputStream
 
 @Composable
 fun ActiveRunScreenRoot(
+    onFinish: () -> Unit,
+    onBack: () -> Unit,
     onServiceToggle: (isServiceRunning: Boolean) -> Unit,
     viewModel: ActiveRunViewModel = koinViewModel(),
 ) {
+
+    val context = LocalContext.current
+    ObserveAsEvents(flow = viewModel.events) {event ->
+        when(event) {
+            is ActiveRunEvent.Error -> {
+                Toast.makeText(
+                    context,
+                    event.message.asString(context),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            ActiveRunEvent.RunSaved -> {
+                onFinish()
+            }
+        }
+
+    }
     ActiveRunScreen(
         state = viewModel.state,
         onServiceToggle = onServiceToggle,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when(action) {
+                is ActiveRunAction.OnBackClick -> {
+                    if (!viewModel.state.hasStartedRunning) {
+                        onBack()
+                    }
+                }
+                else -> Unit
+            }
+            viewModel.onAction(action)
+        }
     )
 }
 
