@@ -7,12 +7,14 @@ import com.alexallafi.run.presentation.di.runPresentationModule
 import com.alexallafi.core.data.di.coreDataModule
 import com.alexallafi.core.database.di.databaseModule
 import com.alexallafi.myrunique.di.appModule
+import com.alexallafi.run.data.di.runDataModule
 import com.alexallafi.run.location.di.locationModule
 import com.alexallafi.run.network.di.networkModule
 import com.plcoding.runique.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
@@ -29,6 +31,7 @@ class Runique : Application() {
 
         startKoin {
             androidContext(this@Runique)
+            workManagerFactory()
             modules(
                 appModule,
                 authDataModule,
@@ -37,7 +40,8 @@ class Runique : Application() {
                 runPresentationModule,
                 locationModule,
                 databaseModule,
-                networkModule
+                networkModule,
+                runDataModule
             )
         }
     }
