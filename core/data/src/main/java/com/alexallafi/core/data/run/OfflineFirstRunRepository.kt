@@ -1,5 +1,6 @@
 package com.alexallafi.core.data.run
 
+import com.alexallafi.core.data.networking.get
 import com.alexallafi.core.database.dao.RunPendingSyncDao
 import com.alexallafi.core.database.mappers.toRun
 import com.alexallafi.core.domain.SessionStorage
@@ -8,10 +9,15 @@ import com.alexallafi.core.domain.run.RemoteRunDataSource
 import com.alexallafi.core.domain.run.Run
 import com.alexallafi.core.domain.run.RunId
 import com.alexallafi.core.domain.run.RunRepository
+import com.alexallafi.core.domain.run.SyncRunScheduler
 import com.alexallafi.core.domain.util.DataError
 import com.alexallafi.core.domain.util.EmptyResult
 import com.alexallafi.core.domain.util.Result
 import com.alexallafi.core.domain.util.asEmptyDataResult
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
+import io.ktor.client.plugins.plugin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -24,7 +30,9 @@ class OfflineFirstRunRepository(
     private val remoteRunDataSource: RemoteRunDataSource,
     private val applicationScope: CoroutineScope,
     private val runPendingSyncDao: RunPendingSyncDao,
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SessionStorage,
+    private val syncRunScheduler: SyncRunScheduler,
+    private val client: HttpClient
 ) : RunRepository {
 
     override fun getRuns(): Flow<List<Run>> {
@@ -54,6 +62,17 @@ class OfflineFirstRunRepository(
 
         return when(remoteResult) {
             is Result.Error -> {
+
+                applicationScope.launch {
+
+                    syncRunScheduler.scheduleSync(
+                        type = SyncRunScheduler.SyncType.CreateRun(
+                            run = runWithId,
+                            mapPicturesBytes = mapPicture
+                        )
+                    )
+                }.join()
+
                 Result.Success(Unit)
             }
             is Result.Success -> {
@@ -78,6 +97,14 @@ class OfflineFirstRunRepository(
         val remoteResult = applicationScope.async {
             remoteRunDataSource.deleteRun(id)
         }.await()
+
+        if (remoteResult is Result.Error) {
+            applicationScope.launch { syncRunScheduler.scheduleSync(
+                type = SyncRunScheduler.SyncType.DeleteRun(id)
+            )
+            }.join()
+
+        }
     }
 
     override suspend fun syncPendingRuns() {
@@ -100,7 +127,7 @@ class OfflineFirstRunRepository(
                             is Result.Error -> Unit
                             is Result.Success -> {
                                 applicationScope.launch {
-                                    runPendingSyncDao.deleteRunPendingSyncEntity(it.id)
+                                    runPendingSyncDao.deleteRunPendingSyncEntity(it.runId)
                                 }.join()
                             }
                         }
@@ -125,5 +152,21 @@ class OfflineFirstRunRepository(
             createdJobs.forEach { it.join() }
             deleteJobs.forEach { it.join() }
         }
+    }
+
+    override suspend fun logout(): EmptyResult<DataError.Network> {
+        val result = client.get<Unit>(
+            route = "/logout"
+        ).asEmptyDataResult()
+
+        client.plugin(Auth).providers.filterIsInstance<BearerAuthProvider>()
+            .firstOrNull()
+            ?.clearToken()
+
+        return result
+    }
+
+    override suspend fun deleteAllRuns() {
+        localRunDataSource.deleteAll()
     }
 }

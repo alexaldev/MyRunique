@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class RunPendingSyncEntity(
     @Embedded val run: RunEntity,
-    @PrimaryKey(autoGenerate = true)
-    val id: String = run.id,
+    @PrimaryKey(autoGenerate = false)
+    val runId: String = run.id,
     val mapPictureBytes: ByteArray,
     val userId: String
 ) {
@@ -19,7 +19,7 @@ data class RunPendingSyncEntity(
         other as RunPendingSyncEntity
 
         if (run != other.run) return false
-        if (id != other.id) return false
+        if (runId != other.runId) return false
         if (!mapPictureBytes.contentEquals(other.mapPictureBytes)) return false
         if (userId != other.userId) return false
 
@@ -28,7 +28,7 @@ data class RunPendingSyncEntity(
 
     override fun hashCode(): Int {
         var result = run.hashCode()
-        result = 31 * result + id.hashCode()
+        result = 31 * result + runId.hashCode()
         result = 31 * result + mapPictureBytes.contentHashCode()
         result = 31 * result + userId.hashCode()
         return result
