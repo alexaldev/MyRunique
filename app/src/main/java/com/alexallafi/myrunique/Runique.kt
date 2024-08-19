@@ -1,6 +1,7 @@
 package com.alexallafi.myrunique
 
 import android.app.Application
+import android.content.Context
 import com.alexallafi.auth.data.di.authDataModule
 import com.alexallafi.auth.presentation.di.authViewModelModule
 import com.alexallafi.run.presentation.di.runPresentationModule
@@ -10,6 +11,7 @@ import com.alexallafi.myrunique.di.appModule
 import com.alexallafi.run.data.di.runDataModule
 import com.alexallafi.run.location.di.locationModule
 import com.alexallafi.run.network.di.networkModule
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.plcoding.runique.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -44,5 +46,10 @@ class Runique : Application() {
                 runDataModule
             )
         }
+    }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        SplitCompat.install(this)
     }
 }
